@@ -52,8 +52,19 @@ const shoppingList = (function(){
   
     // insert that HTML into the DOM
     $('.js-shopping-list').html(shoppingListItemsString);
+    
+    if(store.error){
+      $('.js-error').html(`<p>Error : ${store.error}<p>`);
+      //  console.log("TESTING ERROR DIV");}
+      $('.js-error').show()
+      store.error=null;}
+    else{
+      $('.js-error').html(``);
+      $('.js-error').hide()
+      console.log(store.error);
+    }
   }
-  
+ 
   
   function handleNewItemSubmit() {
     $('#js-shopping-list-form').submit(function (event) {
@@ -63,7 +74,16 @@ const shoppingList = (function(){
       api.createItem(newItemName, (item) => {
         store.addItem(item);
         shoppingList.render();
-      });
+      },
+      (error)=>{
+        store.error = error.responseJSON.message;
+        console.log(store.error);
+        shoppingList.render();
+        store.error = null;
+      
+      }
+      
+      );
       // api.getItems((items) => {
       //   items.forEach((item) => store.addItem(item));
       //   shoppingList.render();
@@ -84,8 +104,12 @@ const shoppingList = (function(){
       api.updateItem(id, {checked: !currentItem.checked}, function(){
         store.findAndUpdate(id, {checked: !currentItem.checked});
         render();
-      }
-      ); 
+      },
+      (error)=>{
+        store.error = error.responseJSON.message;
+        console.log(error);
+        shoppingList.render();
+      })
     });
   }
   
@@ -95,10 +119,20 @@ const shoppingList = (function(){
       // get the index of the item in store.items
       const id = getItemIdFromElement(event.currentTarget);
       // delete the item
-      api.deleteItem(id, function(){
-        store.findAndDelete(id);
-        render();
-      });
+      api.deleteItem(
+        id, 
+        
+        function(){
+          store.findAndDelete(id);
+          render();
+        },
+
+        (error)=>{
+          store.error = error.responseJSON.message;
+          console.log(error);
+          shoppingList.render();
+        }
+      )
     });
   }
   

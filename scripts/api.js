@@ -8,35 +8,39 @@ const api = (function(){
     $.getJSON(`${base_URL}/items`, callback);
   };
 
-  const createItem = function(name, callback){
+  const createItem = function(name, callback, error){
     const newItem = JSON.stringify({name});
     $.ajax({
       url: `${base_URL}/items`,
       method: 'POST',
       contentType: 'application/json',
       data: newItem,
-      success: callback
+      success: callback,
+      error: error
     });
   };
 
 
-  const updateItem = function (id, updateData, callback){
+  const updateItem = function (id, updateData, callback, error){
     $.ajax({
       url: `${base_URL}/items/${id}`,
       method: 'PATCH',
       contentType: 'application/json',
       data: JSON.stringify(updateData),
-      success: callback
+      success: callback,
+      error: error
 
     });
   };
 
-  const deleteItem = function(id, callback){
+  const deleteItem = function(id, callback, error){
     $.ajax({
       url: `${base_URL}/items/${id}`,
       method: 'DELETE',
-      contentType: 'application/json',
-      success: callback          
+      //contentType: 'application/json',
+      success: callback,
+      error: error  
+
     });
   };
 
