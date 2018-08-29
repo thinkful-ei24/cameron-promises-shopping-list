@@ -11,11 +11,11 @@ const api = (function(){
   const createItem = function(name, callback){
     const newItem = JSON.stringify({name});
     $.ajax({
-        url: `${base_URL}/items`,
-        method: 'POST',
-        contentType: 'application/json',
-        data: newItem,
-        success: callback
+      url: `${base_URL}/items`,
+      method: 'POST',
+      contentType: 'application/json',
+      data: newItem,
+      success: callback
     });
   };
   return {
