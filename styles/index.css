@@ -49,3 +49,8 @@ button:hover {
 .shopping-item__checked {
   text-decoration: line-through;
 }
+
+.js-error {
+  border: 1px black solid;
+  color: red;
+}
