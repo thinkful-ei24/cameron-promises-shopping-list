@@ -2,45 +2,36 @@
 'use strict';
 
 const api = (function(){
-  const base_URL="https://thinkful-list-api.herokuapp.com/cameron-janet";
+  const base_URL='https://thinkful-list-api.herokuapp.com/cameron-janet';
 
-  const getItems = function (callback){
-    $.getJSON(`${base_URL}/items`, callback);
+  const getItems = function (){
+    return $.getJSON(`${base_URL}/items`);
   };
 
-  const createItem = function(name, callback, error){
+  const createItem = function(name){
     const newItem = JSON.stringify({name});
-    $.ajax({
+    return $.ajax({
       url: `${base_URL}/items`,
       method: 'POST',
       contentType: 'application/json',
-      data: newItem,
-      success: callback,
-      error: error
+      data: newItem
     });
   };
 
 
-  const updateItem = function (id, updateData, callback, error){
-    $.ajax({
+  const updateItem = function (id, updateData){
+    return $.ajax({
       url: `${base_URL}/items/${id}`,
       method: 'PATCH',
       contentType: 'application/json',
-      data: JSON.stringify(updateData),
-      success: callback,
-      error: error
-
+      data: JSON.stringify(updateData)
     });
   };
 
-  const deleteItem = function(id, callback, error){
-    $.ajax({
+  const deleteItem = function(id){
+    return $.ajax({
       url: `${base_URL}/items/${id}`,
-      method: 'DELETE',
-      //contentType: 'application/json',
-      success: callback,
-      error: error  
-
+      method: 'DELETE'
     });
   };
 

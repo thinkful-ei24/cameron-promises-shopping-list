@@ -1,4 +1,4 @@
-/* global store */
+/* global store, api, $ */
 'use strict';
 // eslint-disable-next-line no-unused-vars
 const shoppingList = (function(){
@@ -71,19 +71,18 @@ const shoppingList = (function(){
       event.preventDefault();
       const newItemName = $('.js-shopping-list-entry').val();
       $('.js-shopping-list-entry').val('');
-      api.createItem(newItemName, (item) => {
-        store.addItem(item);
-        shoppingList.render();
-      },
-      (error)=>{
-        store.error = error.responseJSON.message;
-        console.log(store.error);
-        shoppingList.render();
-        store.error = null;
+      api.createItem(newItemName)
+        .then((item) => {
+          store.addItem(item);
+          shoppingList.render();
+        })
+        .catch((error)=>{
+          store.error = error.responseJSON.message;
+          console.log(store.error);
+          shoppingList.render();
+          store.error = null;
+        });
       
-      }
-      
-      );
       // api.getItems((items) => {
       //   items.forEach((item) => store.addItem(item));
       //   shoppingList.render();
@@ -101,15 +100,17 @@ const shoppingList = (function(){
     $('.js-shopping-list').on('click', '.js-item-toggle', event => {
       const id = getItemIdFromElement(event.currentTarget);
       const currentItem = store.findById(id);
-      api.updateItem(id, {checked: !currentItem.checked}, function(){
-        store.findAndUpdate(id, {checked: !currentItem.checked});
-        render();
-      },
-      (error)=>{
-        store.error = error.responseJSON.message;
-        console.log(error);
-        shoppingList.render();
-      })
+      api.updateItem(id, {checked: !currentItem.checked})
+        .then(() => {
+          store.findAndUpdate(id, {checked: !currentItem.checked});
+          render();
+        }) 
+        .catch((error)=>{
+          store.error = error.responseJSON.message;
+          console.log(error);
+          shoppingList.render();
+        }); 
+
     });
   }
   
@@ -119,20 +120,16 @@ const shoppingList = (function(){
       // get the index of the item in store.items
       const id = getItemIdFromElement(event.currentTarget);
       // delete the item
-      api.deleteItem(
-        id, 
-        
-        function(){
+      api.deleteItem(id) 
+        .then(() => {
           store.findAndDelete(id);
           render();
-        },
-
-        (error)=>{
+        })  
+        .catch((error)=>{
           store.error = error.responseJSON.message;
           console.log(error);
           shoppingList.render();
-        }
-      )
+        });
     });
   }
   
@@ -141,11 +138,11 @@ const shoppingList = (function(){
       event.preventDefault();
       const id = getItemIdFromElement(event.currentTarget);
       const itemName = $(event.currentTarget).find('.shopping-item').val();
-      api.updateItem(id, {name : itemName}, function(){
-        store.findAndUpdate(id, {name: itemName});
-        render();
-      }
-      );
+      api.updateItem(id, {name : itemName})
+        .then(function(){
+          store.findAndUpdate(id, {name: itemName});
+          render();
+        }); 
     
     });
   }
